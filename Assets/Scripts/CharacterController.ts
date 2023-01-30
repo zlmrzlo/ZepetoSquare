@@ -5,6 +5,9 @@ import {Player, State, Vector3} from 'ZEPETO.Multiplay.Schema'
 import {CharacterState, SpawnInfo, ZepetoPlayers, ZepetoPlayer, CharacterJumpState} from 'ZEPETO.Character.Controller'
 import * as UnityEngine from "UnityEngine";
 
+interface TargetData {
+    lastJoinTime: string;
+}
 
 export default class CharacterController extends ZepetoScriptBehaviour {
 
@@ -16,7 +19,6 @@ export default class CharacterController extends ZepetoScriptBehaviour {
     private zepetoPlayer: ZepetoPlayer;
 
     private Start() {
-
         this.multiplay.RoomCreated += (room: Room) => {
             this.room = room;
         };
@@ -26,6 +28,14 @@ export default class CharacterController extends ZepetoScriptBehaviour {
         };
 
         this.StartCoroutine(this.SendMessageLoop(0.04));
+    }
+
+    public getRoom() {
+        return this.room;
+    }
+
+    public getZepetoPlayer() {
+        return this.zepetoPlayer;
     }
 
     // Send the local character transform to the server at the scheduled Interval Time.
@@ -53,6 +63,7 @@ export default class CharacterController extends ZepetoScriptBehaviour {
             ZepetoPlayers.instance.OnAddedLocalPlayer.AddListener(() => {
                 const myPlayer = ZepetoPlayers.instance.LocalPlayer.zepetoPlayer;
                 this.zepetoPlayer = myPlayer;
+                this.zepetoPlayer.character.tag = "Player";
             });
 
             // [CharacterController] (Local) Called when the Player instance is fully loaded in Scene

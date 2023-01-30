@@ -1,10 +1,12 @@
 import {Sandbox, SandboxOptions, SandboxPlayer} from "ZEPETO.Multiplay";
-import {DataStorage} from "ZEPETO.Multiplay.DataStorage";
-import {Player, Transform, Vector3} from "ZEPETO.Multiplay.Schema";
+import {DataStorage, loadDataStorage} from "ZEPETO.Multiplay.DataStorage";
+import {Player, Transform, UserInfo, Vector3} from "ZEPETO.Multiplay.Schema";
+
+interface TargetData {
+    lastJoinTime: string;
+}
 
 export default class extends Sandbox {
-
-
     storageMap:Map<string,DataStorage> = new Map<string, DataStorage>();
     
     constructor() {
@@ -12,6 +14,14 @@ export default class extends Sandbox {
     }
 
     onCreate(options: SandboxOptions) {
+        
+        this.onMessage("saveTargetData", (client: SandboxPlayer, targetData: TargetData) => {
+            this.saveTargetData(client, targetData);
+        });
+
+        this.onMessage("loadTargetData", (client: SandboxPlayer, userId: string) => {
+            this.loadTargetData(client, userId);
+        });
 
         // Room 객체가 생성될 때 호출됩니다.
         // Room 객체의 상태나 데이터 초기화를 처리 한다.
@@ -57,13 +67,22 @@ export default class extends Sandbox {
             player.zepetoUserId = client.userId;
         }
 
+        const userinfo = new UserInfo();
+        userinfo.sessionId = client.sessionId;
+
+        if(client.userId) {
+            userinfo.userId = client.userId;
+        }
+
         // [DataStorage] 입장한 Player의 DataStorage Load
         const storage: DataStorage = client.loadDataStorage();
 
-        this.storageMap.set(client.sessionId,storage);
+        this.storageMap.set(client.sessionId, storage);
 
         let visit_cnt = await storage.get("VisitCount") as number;
-        if (visit_cnt == null) visit_cnt = 0;
+        if (visit_cnt == null) {
+            visit_cnt = 0;
+        }
 
         console.log(`[OnJoin] ${client.sessionId}'s visiting count : ${visit_cnt}`)
 
@@ -73,6 +92,7 @@ export default class extends Sandbox {
         // client 객체의 고유 키값인 sessionId 를 사용해서 Player 객체를 관리.
         // set 으로 추가된 player 객체에 대한 정보를 클라이언트에서는 players 객체에 add_OnAdd 이벤트를 추가하여 확인 할 수 있음.
         this.state.players.set(client.sessionId, player);
+        this.state.userInfos.set(client.userId, userinfo);
     }
 
     onTick(deltaTime: number): void {
@@ -84,5 +104,30 @@ export default class extends Sandbox {
         // allowReconnection 설정을 통해 순단에 대한 connection 유지 처리등을 할 수 있으나 기본 가이드에서는 즉시 정리.
         // delete 된 player 객체에 대한 정보를 클라이언트에서는 players 객체에 add_OnRemove 이벤트를 추가하여 확인 할 수 있음.
         this.state.players.delete(client.sessionId);
+        this.state.userInfos.delete(client.userId);
+    }
+
+    async saveTargetData(client: SandboxPlayer, targetData: TargetData) {
+        console.log(`save target data (${client.userId})\n ${JSON.stringify(targetData)}`);
+        const playerStorage: DataStorage = client.loadDataStorage();
+        const result = await playerStorage.set("targetData", targetData);
+        console.log(`Save Result : ${result}`);
+    }
+
+    async loadTargetData(client: SandboxPlayer, userId: string) {
+        console.log(`load target data (${userId})`);
+        const userStorage: DataStorage = await loadDataStorage(userId);
+        const targetData = await userStorage.get<TargetData>("targetData");
+        console.log(JSON.stringify(targetData));
+
+        if (targetData) {
+            client.send("TargetData", targetData);
+        } else {
+            const empty: TargetData = {
+                lastJoinTime: ""
+            }
+
+            client.send("TargetData", empty);
+        }
     }
 }

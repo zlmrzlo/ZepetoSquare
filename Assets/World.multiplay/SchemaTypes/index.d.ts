@@ -5,6 +5,7 @@ declare module "ZEPETO.Multiplay.Schema" {
 
 	interface State extends Schema {
 		players: MapSchema<Player>;
+		userInfos: MapSchema<UserInfo>;
 	}
 	class Vector3 extends Schema {
 		x: number;
@@ -22,5 +23,10 @@ declare module "ZEPETO.Multiplay.Schema" {
 		transform: Transform;
 		state: number;
 		subState: number;
+	}
+	class UserInfo extends Schema {
+		sessionId: string;
+		userId: string;
+		name: string;
 	}
 }

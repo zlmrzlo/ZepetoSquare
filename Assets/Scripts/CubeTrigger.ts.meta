@@ -1,0 +1,35 @@
+fileFormatVersion: 2
+guid: a02986f0ce520c64ab2b708f3b0c01b1
+importerOverride: ZEPETO.Script.Compiler:ZEPETO.Script:TypescriptAssetImporter
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: -1123457745, guid: 54cf806323ffe4418a4ce4cc63fe6b9d, type: 3}
+  isAssemblyDeclarations: 0
+  assembly: 
+  generateAllTypes: 1
+  types: []
+  generateWrapper: 0
+  overrideWrapperTypes: 0
+  wrapperTypes: []
+  WrapperFilters: []
+  wrapperOutputDirectory: Generated
+  compiledResult: '{"source":"\"use strict\";\r\nObject.defineProperty(exports, \"__esModule\",
+    { value: true });\r\nconst UnityEngine_1 = require(\"UnityEngine\");\r\nconst
+    ZEPETO_Multiplay_1 = require(\"ZEPETO.Multiplay\");\r\nconst ZEPETO_Script_1
+    = require(\"ZEPETO.Script\");\r\nconst CharacterController_1 = require(\"./CharacterController\");\r\nclass
+    CubeTrigger extends ZEPETO_Script_1.ZepetoScriptBehaviour {\r\n    Start() {\r\n       
+    this.characterController = UnityEngine_1.GameObject.FindGameObjectWithTag(\"CharacterController\");\r\n       
+    this.characterControllerScript = this.characterController.GetComponent($typeof(CharacterController_1.default));\r\n   
+    }\r\n    OnTriggerEnter(collider) {\r\n        if (collider.CompareTag(\"Player\"))
+    {\r\n            const targetData = new ZEPETO_Multiplay_1.RoomData();\r\n           
+    targetData.Add(\"roomJoinTime\", Date());\r\n            const room = this.characterControllerScript.getRoom();\r\n           
+    room.Send(\"saveTargetData\", targetData.GetObject());\r\n            room.Send(\"loadTargetData\",
+    this.characterControllerScript.getZepetoPlayer().userId);\r\n        }\r\n   
+    }\r\n}\r\nexports.default = CubeTrigger;\r\n//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiQ3ViZVRyaWdnZXIuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyJDdWJlVHJpZ2dlci50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOztBQUFBLDZDQUFtRTtBQUNuRSx1REFBa0Q7QUFDbEQsaURBQXFEO0FBQ3JELCtEQUF3RDtBQUV4RCxNQUFxQixXQUFZLFNBQVEscUNBQXFCO0lBSTFELEtBQUs7UUFDRCxJQUFJLENBQUMsbUJBQW1CLEdBQUcsd0JBQVUsQ0FBQyxxQkFBcUIsQ0FBQyxxQkFBcUIsQ0FBQyxDQUFDO1FBQ25GLElBQUksQ0FBQyx5QkFBeUIsR0FBRyxJQUFJLENBQUMsbUJBQW1CLENBQUMsWUFBWSxTQUFDLDZCQUFtQixFQUFHLENBQUM7SUFDbEcsQ0FBQztJQUVELGNBQWMsQ0FBQyxRQUFrQjtRQUM3QixJQUFHLFFBQVEsQ0FBQyxVQUFVLENBQUMsUUFBUSxDQUFDLEVBQUU7WUFDOUIsTUFBTSxVQUFVLEdBQUcsSUFBSSwyQkFBUSxFQUFFLENBQUM7WUFDbEMsVUFBVSxDQUFDLEdBQUcsQ0FBQyxjQUFjLEVBQUUsSUFBSSxFQUFFLENBQUMsQ0FBQztZQUN2QyxNQUFNLElBQUksR0FBRyxJQUFJLENBQUMseUJBQXlCLENBQUMsT0FBTyxFQUFFLENBQUE7WUFDckQsSUFBSSxDQUFDLElBQUksQ0FBQyxnQkFBZ0IsRUFBRSxVQUFVLENBQUMsU0FBUyxFQUFFLENBQUMsQ0FBQztZQUNwRCxJQUFJLENBQUMsSUFBSSxDQUFDLGdCQUFnQixFQUFFLElBQUksQ0FBQyx5QkFBeUIsQ0FBQyxlQUFlLEVBQUUsQ0FBQyxNQUFNLENBQUMsQ0FBQztTQUN4RjtJQUNMLENBQUM7Q0FDSjtBQWxCRCw4QkFrQkMifQ==","assetPath":"Assets/Scripts/CubeTrigger.ts","manifest":{"properties":[{"assembly":"UnityEngine.CoreModule","name":"characterController","type":"UnityEngine.GameObject","isArray":false,"initValue":[],"enumKeys":[],"enumValues":[],"attributes":[]},{"assembly":"","name":"characterControllerScript","type":"C:/Zepeto/SquareTest(1)/Assets/Scripts/CharacterController.default","isArray":false,"initValue":[],"enumKeys":[],"enumValues":[],"attributes":[]}],"name":"CubeTrigger","description":""},"isCompiled":true}'
+  typescriptHash: bab043d2f23708f3646ac13d7c31c024
+  onlyWriteTrigger: 0
